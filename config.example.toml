@@ -1,0 +1,77 @@
+# Dubber settings. Copy this file to config.toml, change what you like, and start the server:
+#   uv run dubber serve --config config.toml
+# Every value below is the built-in one, so a setting you leave out keeps it.
+
+# Where the metrics go: one JSON line for each dubbed sentence. `uv run dubber stats` reads them.
+metrics_path = "metrics.jsonl"
+
+# Where `dubber serve` writes its log, beside what it prints: what the session did and what each
+# sentence cost. At 2 MB a new file is begun and three old ones are kept. "" writes no file.
+log_path = "dubber.log"
+
+[server]
+host = "127.0.0.1"
+port = 8765
+
+[duck]
+volume = 0.2  # the video's volume while it is dubbed, from 0.15 to 0.25
+
+[translator]
+engine = "identity"  # "identity" keeps the English text (the stand-in); "pc" translates it on the PC
+context_sentences = 3  # the sentences before each one that go with it as context; 0 sends none
+restore_punctuation = true  # on captions without punctuation the PC's model puts it back, so the dub is cut at sentence ends
+
+[voice]
+engine = "say"  # "say" (macOS), "supertonic" or "voxcpm" if you installed that extra, or "pc": VoxCPM2 on the PC with voice = "owner"
+voice = "Samantha"  # for say, a name from `say -v '?'`; for supertonic M1 to M5 or F1 to F5; for pc also "auto" (see below)
+# With engine = "pc" and voice = "auto" the PC's model looks at each video's title, thumbnail and three
+# frames: a video that a woman presents is read in `female`, every other video in `male`. It is the
+# translator's model that looks, so `auto` also needs engine = "pc" under [translator].
+male = "kalin"
+female = "ipek"
+
+# First Turkish: translate on the PC and read with the Turkish system voice. Change two values in
+# the tables above: engine = "pc" under [translator], and voice = "Yelda" under [voice]. Do not
+# uncomment or paste a second copy of those tables, because a table can appear only once.
+
+# The PC's llama.cpp server, used when translator.engine is "pc". `dubber serve` asks it for its
+# list of models when it starts, and stops if it cannot be reached. The key file holds only the
+# key, on one line.
+[pc]
+base_url = "http://my-pc.example.ts.net:8080"
+api_key_file = "~/.qwen-pc/api-key"
+preferred_model = "qwen3.8-27b"  # asked for only when the PC has no model loaded; otherwise the loaded one is used
+tts_url = "http://my-pc.example.ts.net:8191"  # dubber-tts on the PC (voice engine "pc"); see pc/README.md
+
+# The Mac's own model server. `dubber serve` does not use it yet.
+[mac_llm]
+base_url = "http://127.0.0.1:11434/v1"
+model = "qwen3.8:27b-mlx"
+
+# How the caption track is cut into the pieces that are translated and spoken. A sentence stays
+# whole unless it runs past max_words or max_seconds; then it is split after a comma near its
+# middle when it has one. Turkish puts the verb last, so half a sentence translates badly.
+[segmenter]
+pause = 0.6        # seconds of silence that end a piece on a track without sentence punctuation
+long_pause = 1.5   # the same on a punctuated track, where full stops say where sentences end
+min_words = 6      # a shorter last piece joins the one before it
+max_words = 60
+max_seconds = 18.0
+
+# How the dub is kept in step with the video; times are seconds. The values shown are the built-in
+# ones. `startup_ready`: how much must be ready before the video plays. `hold_cap`: the longest the
+# video is held; after it the video plays on and the dub catches up. `lead_min`: with less than this
+# ready ahead, a clip that does not fit is not made again shorter, and after a hold that ran out the
+# video is held again only once a clip is ready this far ahead. `lead_max`: how far ahead the dub is made.
+# [scheduler]
+# startup_ready = 12.0
+# hold_cap = 20.0
+# lead_min = 30.0
+# lead_max = 120.0
+
+# Terms the translator must render one way, English = Turkish. A name kept in English is
+# written the same on both sides. TranslateGemma's fixed instruction cannot take a glossary.
+# [glossary]
+# Heighliner = "Heighliner"
+# spice = "baharat"
+# "Spacing Guild" = "Uzay Loncası"

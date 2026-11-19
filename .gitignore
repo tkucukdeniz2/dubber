@@ -1,0 +1,14 @@
+.venv/
+bakeoff/
+*.wav
+# the reference clips of the designed voices are kept: the PC clones from them
+!pc/voices/*.wav
+*.aiff
+__pycache__/
+.pytest_cache/
+.superpowers/
+metrics.jsonl
+dubber.log*
+config.toml
+.DS_Store
+.worktrees/

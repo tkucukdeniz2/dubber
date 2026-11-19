@@ -1,0 +1,49 @@
+[project]
+name = "dubber"
+version = "0.0.1"
+description = "Local English-to-Turkish dubbing of YouTube videos on macOS"
+readme = "README.md"
+authors = [
+    { name = "Tarik Kucukdeniz", email = "tkdeniz@iuc.edu.tr" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "httpx>=0.28.1",
+    "numpy>=2.5.4",
+    "sounddevice>=0.5.6",
+    "soundfile>=0.14.0",
+    "websockets>=17.4",
+]
+
+[project.optional-dependencies]
+supertonic = [
+    "supertonic>=1.3.1",
+]
+voxcpm = [
+    "mlx-audio>=0.6.3",
+]
+
+[project.scripts]
+dubber = "dubber.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.9.18,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-root = ""
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+markers = ["live: talks to real services", "slow: loads large local models"]
+addopts = "-m 'not live and not slow'"
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+[dependency-groups]
+dev = [
+    "jinja2>=3.1.6",
+    "pytest>=9.2.0",
+    "pytest-asyncio>=1.4.1",
+]

@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "Dubber",
+  "version": "0.1.0",
+  "description": "Dubs English YouTube videos into Turkish with the dubber orchestrator running on this Mac.",
+  "permissions": ["activeTab", "storage"],
+  "host_permissions": ["https://www.youtube.com/*"],
+  "background": {
+    "service_worker": "sw.js"
+  },
+  "action": {
+    "default_title": "Dub to Turkish"
+  },
+  "commands": {
+    "toggle-dub": {
+      "suggested_key": {
+        "default": "Alt+Shift+D"
+      },
+      "description": "Start or stop dubbing the video in this tab"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.youtube.com/*"],
+      "js": ["lib/volume.js", "lib/player.js", "lib/protocol.js", "lib/overlay.js", "content.js"],
+      "css": ["overlay.css"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://www.youtube.com/*"],
+      "js": ["lib/timedtext.js", "page.js"],
+      "world": "MAIN",
+      "run_at": "document_idle"
+    }
+  ]
+}

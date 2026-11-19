@@ -1,0 +1,8 @@
+{
+  "wireMagic": "pb3",
+  "events": [
+    {"tStartMs": 16260, "dDurationMs": 3970, "segs": [{"utf8": "How do you explain"}]},
+    {"tStartMs": 20260, "dDurationMs": 2970, "segs": [{"utf8": "when things don't go as we assume?"}]},
+    {"tStartMs": 23260, "dDurationMs": 1000, "segs": [{"utf8": "Or better."}]}
+  ]
+}
